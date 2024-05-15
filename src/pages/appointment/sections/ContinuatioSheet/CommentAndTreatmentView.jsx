@@ -1,6 +1,7 @@
 import React from 'react'
 import { Box, Flex, GridItem, Heading, SimpleGrid, Text } from '@chakra-ui/react';
 import { Modal, ModalOverlay, ModalContent, ModalBody } from '@chakra-ui/react';
+import { Image } from '@chakra-ui/react'
 import FormTextarea from '../../../../components/form/FormTextarea';
 
 const CommentAndTreatmentView = ({ modal, comment }) => {
@@ -39,6 +40,10 @@ const CommentAndTreatmentView = ({ modal, comment }) => {
                 </SimpleGrid>
 
                 <Box w='47%'>
+                  <Heading size='md'>Record Image</Heading>
+                  {comment?.image && <Image objectFit="cover" src={comment?.image} alt="Image" /> }
+                  {!comment?.image && <p>No image uploaded</p> }
+                
                   <Heading size='md' textAlign={'center'}>Examinations</Heading>
                   <Flex direction={'column'} align='center' gap='10px' mt='2'>
                     {(comment?.examination || []).map((exam, index) => (

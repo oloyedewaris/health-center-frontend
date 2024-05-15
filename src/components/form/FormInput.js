@@ -9,7 +9,7 @@ const FormInput = ({ isRequired, error, onChange, id, value, label, placeholder,
       <Input
         borderColor={error && 'red'}
         id={id}
-        value={value}
+        value={type !== 'file' ? value : undefined}
         type={type}
         placeholder={placeholder}
         onChange={onChange}

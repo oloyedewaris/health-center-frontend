@@ -4,6 +4,8 @@ import { Modal, ModalOverlay, ModalContent, ModalBody } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import FormTextarea from '../../../../components/form/FormTextarea';
 import FormSelect from '../../../../components/form/FromSelect';
+import FormInput from '../../../../components/form/FormInput';
+import PreviewImage from '../../../../components/PreviewImage';
 import continuationSheetData from '../../../../utils/continuationSheetData';
 import { CloseIcon } from '@chakra-ui/icons';
 import { updateCommentApi } from '../../../../api/patients';
@@ -27,6 +29,7 @@ const CommentAndTreatmentEdit = ({ modal, patient, refetch, comment }) => {
       examination: comment?.examination || [],
       assessment: comment?.assessment || '',
       plan: comment?.plan || '',
+      image: comment?.image || '',
     })
   }, [comment])
 
@@ -91,6 +94,11 @@ const CommentAndTreatmentEdit = ({ modal, patient, refetch, comment }) => {
     formik.setFieldValue('examination', copy)
   };
 
+  const handleFileChange = (event) => {
+    const file = event.currentTarget.files[0];
+    formik.setFieldValue('image', file);
+  };
+
 
   return (
     <Modal isCentered isOpen={modal?.isOpen} onClose={modal?.onClose}>
@@ -147,6 +155,18 @@ const CommentAndTreatmentEdit = ({ modal, patient, refetch, comment }) => {
                 </SimpleGrid>
 
                 <Box w='47%'>
+
+                <FormInput
+                  type='file'
+                  onChange={handleFileChange}
+                  label='Image'
+                  placeholder='Image'
+                  id="image"
+                />
+                {formik.values.image && <Box bg='#E4DFDA' w='full' my='8px' py='8px' px='10px' borderRadius={'8px'} minH={'150px'}>
+                        <PreviewImage file={formik.values.image } />
+                      </Box>}
+
                   <FormSelect
                     onChange={e => setExamTitle(e.target.value)}
                     value={examTitle}

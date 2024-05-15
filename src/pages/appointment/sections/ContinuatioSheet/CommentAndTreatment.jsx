@@ -3,7 +3,9 @@ import { Box, Button, Center, CircularProgress, Flex, GridItem, Heading, SimpleG
 import { Modal, ModalOverlay, ModalContent, ModalBody } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import FormTextarea from '../../../../components/form/FormTextarea';
+import FormInput from '../../../../components/form/FormInput';
 import FormSelect from '../../../../components/form/FromSelect';
+import PreviewImage from '../../../../components/PreviewImage';
 import continuationSheetData from '../../../../utils/continuationSheetData';
 import { CloseIcon } from '@chakra-ui/icons';
 import { addCommentApi } from '../../../../api/patients';
@@ -29,6 +31,7 @@ const CommentAndTreatment = ({ commentModal, patient, refetch }) => {
         formik.resetForm();
         formik.setSubmitting(false)
         formik.resetForm();
+        setExams([])
         commentModal.onClose();
         toast({
           title: 'Submitted successfully',
@@ -56,12 +59,18 @@ const CommentAndTreatment = ({ commentModal, patient, refetch }) => {
       examination: [],
       assessment: '',
       plan: '',
+      image: null,
     },
     onSubmit: (values) => {
       const dataToSubmit = { ...values, examination: exams };
       addCommentMutation.mutate({ patientId: patient?._id, dataToSubmit })
     }
   })
+
+  const handleFileChange = (event) => {
+    const file = event.currentTarget.files[0];
+    formik.setFieldValue('image', file);
+  };
 
   const handleAddExam = () => {
     const examToAdd = {
@@ -140,6 +149,17 @@ const CommentAndTreatment = ({ commentModal, patient, refetch }) => {
                 </SimpleGrid>
 
                 <Box w='47%'>
+                <FormInput
+                  type='file'
+                  onChange={handleFileChange}
+                  label='Image'
+                  placeholder='Image'
+                  id="image"
+                />
+                {formik.values.image && <Box bg='#E4DFDA' w='full' my='8px' py='8px' px='10px' borderRadius={'8px'} minH={'150px'}>
+                        <PreviewImage file={formik.values.image } />
+                      </Box>}
+
                   <FormSelect
                     onChange={e => setExamTitle(e.target.value)}
                     value={examTitle}
