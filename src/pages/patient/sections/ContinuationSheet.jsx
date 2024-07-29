@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { Box, Button, Divider, Flex, Heading, Spinner, Text, VStack, useDisclosure, Input } from '@chakra-ui/react'
+import { Box, Button, Divider, Flex, Heading, Spinner, Text, VStack, useDisclosure, Input, Select  } from '@chakra-ui/react'
 import CommentAndTreatmentView from '../../../pages/appointment/sections/ContinuatioSheet/CommentAndTreatmentView';
 
 import { CiCalendarDate } from "react-icons/ci";
 import { DateRangePicker } from 'react-date-range';
-import { addDays, format } from 'date-fns';
+import { addDays, subDays, format } from 'date-fns';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 
@@ -13,10 +13,14 @@ const ContinuationSheet = ({ patient }) => {
   const commentViewModal = useDisclosure()
   const [comment, setComment] = useState(null)
 
+  const [currentPage, setCurrentPage] = useState(1);
+  // const itemsPerPage = 10;
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
   const [dateRange, setDateRange] = useState([
     {
-      startDate: new Date(),
-      endDate: addDays(new Date(), 7), // Setting a default range of 7 days
+      startDate: subDays(new Date(), 7),
+      endDate: new Date(), // Setting a default range of 7 days
       key: 'selection',
     },
   ]);
@@ -40,145 +44,146 @@ const ContinuationSheet = ({ patient }) => {
   const applyDateRange = () => {
     setDateRange(tempDateRange);
     setShowDatePicker(false);
+    setCurrentPage(1);
   };
 
   const staticData = [
     {
       id: 1,
-      date: '2024-05-01',
+      date: '2024-07-01',
       signsAndSymptoms: 'Cough and fever',
       assessment: 'Upper respiratory tract infection',
       plan: 'Prescribed antibiotics and rest',
     },
     {
       id: 2,
-      date: '2024-05-03',
+      date: '2024-07-03',
       signsAndSymptoms: 'Sore throat and fatigue',
       assessment: 'Tonsillitis',
       plan: 'Prescribed antibiotics and pain relief',
     },
     {
       id: 3,
-      date: '2024-05-05',
+      date: '2024-07-05',
       signsAndSymptoms: 'Headache and dizziness',
       assessment: 'Migraine',
       plan: 'Prescribed painkillers and hydration',
     },
     {
       id: 4,
-      date: '2024-05-07',
+      date: '2024-07-07',
       signsAndSymptoms: 'Stomach pain and nausea',
       assessment: 'Gastritis',
       plan: 'Prescribed antacids and dietary changes',
     },
     {
       id: 5,
-      date: '2024-05-09',
+      date: '2024-07-09',
       signsAndSymptoms: 'Shortness of breath',
       assessment: 'Asthma exacerbation',
       plan: 'Inhaler and corticosteroids',
     },
     {
       id: 6,
-      date: '2024-05-10',
+      date: '2024-07-10',
       signsAndSymptoms: 'Chest pain',
       assessment: 'Possible angina',
       plan: 'Referred to cardiologist for further evaluation',
     },
     {
       id: 7,
-      date: '2024-05-12',
+      date: '2024-07-12',
       signsAndSymptoms: 'Back pain',
       assessment: 'Muscle strain',
       plan: 'Prescribed muscle relaxants and physical therapy',
     },
     {
       id: 8,
-      date: '2024-05-13',
+      date: '2024-07-13',
       signsAndSymptoms: 'Rash and itching',
       assessment: 'Allergic reaction',
       plan: 'Prescribed antihistamines and topical steroids',
     },
     {
       id: 9,
-      date: '2024-05-14',
+      date: '2024-07-14',
       signsAndSymptoms: 'Joint pain and swelling',
       assessment: 'Rheumatoid arthritis',
       plan: 'Referred to rheumatologist and prescribed anti-inflammatory medication',
     },
     {
       id: 10,
-      date: '2024-05-15',
+      date: '2024-07-15',
       signsAndSymptoms: 'Fatigue and muscle aches',
       assessment: 'Influenza',
       plan: 'Prescribed antiviral medication and rest',
     },
     {
       id: 11,
-      date: '2024-05-16',
+      date: '2024-07-16',
       signsAndSymptoms: 'Loss of appetite and weight loss',
       assessment: 'Depression',
       plan: 'Referred to psychiatrist and prescribed antidepressants',
     },
     {
       id: 12,
-      date: '2024-05-17',
+      date: '2024-07-17',
       signsAndSymptoms: 'Ear pain and hearing loss',
       assessment: 'Otitis media',
       plan: 'Prescribed antibiotics and pain relief',
     },
     {
       id: 13,
-      date: '2024-05-18',
+      date: '2024-07-18',
       signsAndSymptoms: 'Eye redness and discharge',
       assessment: 'Conjunctivitis',
       plan: 'Prescribed antibiotic eye drops',
     },
     {
       id: 14,
-      date: '2024-05-19',
+      date: '2024-07-19',
       signsAndSymptoms: 'Swollen glands and fever',
       assessment: 'Mononucleosis',
       plan: 'Prescribed rest and hydration',
     },
     {
       id: 15,
-      date: '2024-05-20',
+      date: '2024-07-20',
       signsAndSymptoms: 'Frequent urination and thirst',
       assessment: 'Diabetes mellitus',
       plan: 'Referred to endocrinologist and prescribed insulin',
     },
     {
       id: 16,
-      date: '2024-05-21',
+      date: '2024-07-21',
       signsAndSymptoms: 'Persistent cough and weight loss',
       assessment: 'Tuberculosis',
       plan: 'Referred to infectious disease specialist and prescribed antibiotics',
     },
     {
       id: 17,
-      date: '2024-05-22',
+      date: '2024-07-22',
       signsAndSymptoms: 'Chest tightness and wheezing',
       assessment: 'Asthma',
       plan: 'Prescribed inhaler and monitoring',
     },
     {
       id: 18,
-      date: '2024-05-23',
+      date: '2024-07-23',
       signsAndSymptoms: 'Abdominal pain and diarrhea',
       assessment: 'Gastroenteritis',
       plan: 'Prescribed rehydration therapy and antibiotics',
     },
     {
       id: 19,
-      date: '2024-05-24',
+      date: '2024-07-24',
       signsAndSymptoms: 'Skin lesions and fatigue',
       assessment: 'Psoriasis',
       plan: 'Referred to dermatologist and prescribed topical treatments',
     },
     {
       id: 20,
-      date: '2024-05-25',
+      date: '2024-07-25',
       signsAndSymptoms: 'High blood pressure and headache',
       assessment: 'Hypertension',
       plan: 'Prescribed antihypertensive medication and lifestyle changes',
@@ -210,6 +215,27 @@ const ContinuationSheet = ({ patient }) => {
 
   const filteredComments = filterCommentsByDate(staticData);
   
+
+  const totalPages = Math.ceil(filteredComments.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const displayedComments = filteredComments.slice(startIndex, startIndex + itemsPerPage);
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handleItemsPerPageChange = (event) => {
+    setItemsPerPage(parseInt(event.target.value, 10));
+    setCurrentPage(1); // Reset to the first page whenever items per page changes
+  };
 
 
   return (
@@ -254,7 +280,7 @@ const ContinuationSheet = ({ patient }) => {
             </Box>
           </Flex>
           {/* {(patient?.continuationSheet?.commentAndTreatment || [])?.map(cmt => ( */}
-          {filteredComments.map((cmt, index) => (
+          {displayedComments.map((cmt, index) => (
             <Flex gap='10px' w='full' justify={'center'}>
               {/* <Text w='15%'>27th May, 2024</Text> */}
               <Text w='15%'>{format(new Date(cmt.date), 'MMMM d, yyyy')}</Text>
@@ -266,6 +292,31 @@ const ContinuationSheet = ({ patient }) => {
               </Flex>
             </Flex>
           ))}
+
+        
+
+          {totalPages == 0 && <p>No records</p>}
+          <Flex gap='10px' w='full' justify={'left'}>
+          <Select
+            value={itemsPerPage}
+            onChange={handleItemsPerPageChange}
+            width="100px"
+          >
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={15}>15</option>
+            <option value={20}>20</option>
+          </Select>
+          </Flex>
+        {totalPages > 0 && <Flex justify='space-between' w='full' mt='10px'>
+            <Button onClick={handlePreviousPage} disabled={currentPage === 1}>Previous</Button>
+            <Text>{`Page ${currentPage} of ${totalPages}`}</Text>
+            <Button onClick={handleNextPage} disabled={currentPage === totalPages}>Next</Button>
+          </Flex>}
+
+          {totalPages > 0 && <Flex justify='flex-end' mt='10px'>
+        <Text>Total Number of Records: {`${filteredComments.length}`}</Text>
+          </Flex>}
 
         </VStack>
       ) : <Spinner />}

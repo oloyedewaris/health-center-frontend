@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Box, Button, Center, CircularProgress, Flex, GridItem, Heading, SimpleGrid, Text, useToast } from '@chakra-ui/react';
 import { Modal, ModalOverlay, ModalContent, ModalBody } from '@chakra-ui/react';
 import { useFormik } from 'formik';
+import FromDatePicker from '../../../../components/form/FromDatePicker';
 import FormTextarea from '../../../../components/form/FormTextarea';
 import FormInput from '../../../../components/form/FormInput';
 import FormSelect from '../../../../components/form/FromSelect';
@@ -23,6 +24,9 @@ const CommentAndTreatment = ({ commentModal, patient, refetch }) => {
   const [examTitle, setExamTitle] = useState('')
   const [examNote, setExamNote] = useState('')
   const [exams, setExams] = useState([]);
+  const [date, setDate] = useState(new Date())
+  // const [images, setImages] = useState([]);
+
 
   const addCommentMutation = useMutation(
     (form) => addCommentApi(form?.patientId, form?.dataToSubmit),
@@ -53,24 +57,24 @@ const CommentAndTreatment = ({ commentModal, patient, refetch }) => {
       }
     })
 
-  const formik = useFormik({
-    initialValues: {
-      signsAndSymptoms: '',
-      examination: [],
-      assessment: '',
-      plan: '',
-      image: null,
-    },
-    onSubmit: (values) => {
-      const dataToSubmit = { ...values, examination: exams };
-      addCommentMutation.mutate({ patientId: patient?._id, dataToSubmit })
-    }
-  })
+    const formik = useFormik({
+      initialValues: {
+        signsAndSymptoms: '',
+        examination: [],
+        assessment: '',
+        plan: '',
+        images: [], // Update to store multiple images
+      },
+      onSubmit: (values) => {
+        const dataToSubmit = { ...values, examination: exams, dateOfRecord: date };
+        addCommentMutation.mutate({ patientId: patient?._id, dataToSubmit });
+      },
+    });
 
-  const handleFileChange = (event) => {
-    const file = event.currentTarget.files[0];
-    formik.setFieldValue('image', file);
-  };
+    const handleFileChange = (event) => {
+      const files = Array.from(event.target.files);
+      formik.setFieldValue('images', [...formik.values.images, ...files]);
+    };
 
   const handleAddExam = () => {
     const examToAdd = {
@@ -104,6 +108,14 @@ const CommentAndTreatment = ({ commentModal, patient, refetch }) => {
               <Text fontSize={'20px'} fontWeight={600}>Comments and Treatments</Text>
               <Flex gap='25px' my='20px'>
                 <SimpleGrid w='47%' columns={{ base: 1, md: 1 }} spacing='30px'>
+                  <GridItem>
+                  <FromDatePicker
+              label='Date of Record'
+              id='dateOfRecord'
+              onChange={e => setDate(e)}
+              value={date}
+            />
+                  </GridItem>
                   <GridItem>
                     <FormSelect
                       onChange={e => formik.handleChange('signsAndSymptoms')(`${e.target.value}, ${formik.values.signsAndSymptoms}`)}
@@ -150,15 +162,18 @@ const CommentAndTreatment = ({ commentModal, patient, refetch }) => {
 
                 <Box w='47%'>
                 <FormInput
-                  type='file'
-                  onChange={handleFileChange}
-                  label='Image'
-                  placeholder='Image'
-                  id="image"
-                />
-                {formik.values.image && <Box bg='#E4DFDA' w='full' my='8px' py='8px' px='10px' borderRadius={'8px'} minH={'150px'}>
-                        <PreviewImage file={formik.values.image } />
-                      </Box>}
+  type='file'
+  onChange={handleFileChange}
+  label='Images'
+  placeholder='Images'
+  id="images"
+  multiple // Allow multiple file selection
+/>
+{formik.values.images.length > 0 && formik.values.images.map((image, index) => (
+  <Box key={index} bg='#E4DFDA' w='full' my='8px' py='8px' px='10px' borderRadius={'8px'} minH={'150px'}>
+    <PreviewImage file={image} />
+  </Box>
+))}
 
                   <FormSelect
                     onChange={e => setExamTitle(e.target.value)}
